@@ -35,7 +35,7 @@ class Player: Equatable {
 		self.id = id
 	}
 
-	private var money: Int = startingMoney // Current amount of money
+	private var money: Int = startingMoney // Current amount of money * Default = 1500
 
 	private var playerInJail: Bool = false // Diff. <-> just visiting and in jail
 	var playerHasFreeCard: [Card.format] = [] // Get out of jail free
@@ -227,9 +227,9 @@ class OwnedSpace: Space {
 
 			price = dice.die1 + dice.die2
 			if filteredArray.count == 1 {
-				price *= 10
+				price *= 100
 			} else {
-				price += 4
+				price *= 40
 			}
 		default:
 			price = 0
@@ -254,6 +254,7 @@ class OwnedSpace: Space {
 	override func whenPlayerOnSpace(playerOn: Player) {
 		if (owner != playerOn) || (isMortgaged == false) {
 			playerOn.removeMoney(rentPrice)
+			owner?.addMoney(rentPrice)
 		}
 	}
 }
