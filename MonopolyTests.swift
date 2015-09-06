@@ -67,62 +67,160 @@ class MonopolyTests: XCTestCase {
 		testPlayer.sendToJail()
 
 		XCTAssert(testPlayer.playerHasFreeCard.isEmpty)
+		XCTAssertEqual(testPlayer.currentSpace, jailVisit)
 	}
 
 	func testOnTaxes() {
+		let testPlayer = Player(name: "Test", id: 0)
+		testPlayer.currentSpace = incomeTax
 
+		XCTAssertEqual(testPlayer.getFunds(), 1300)
 	}
 
 	func testOnUnownedProperty() {
+		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
+		let testPlayer = Player(name: "Test", id: 0)
+		testPlayer.currentSpace = testSpace
 
+		XCTAssertEqual(testPlayer.getFunds(), 1500)
 	}
-
+/* Functionality non-existant
 	func testOnOwnedProperty() {
+		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
+		let testPlayer = Player(name: "Test", id: 0)
+		let testLandlord = Player(name: "Landlord", id: 1)
 
+		testSpace.owner = testLandlord
+		testPlayer.currentSpace = testSpace
+
+		XCTAssertEqual(testLandlord.getFunds(), 1540)
 	}
 
 	func testOnOwnedGroup() {
-
+		let testPlayer = Player(name: "Test", id: 0)
+		let testLandlord = Player(name: "Landlord", id: 1)
 	}
-	
-	func testOnUtility1Owned() {
 
+	func testOnUtility1Owned() {
+		let	testSpace = OwnedSpace(name: "Electric Company", type: .Utility)
+		let testPlayer = Player(name: "Test", id: 0)
+		let testLandlord = Player(name: "Landlord", id: 1)
+
+		testSpace.owner = testLandlord
+		testPlayer.currentSpace = testSpace
+
+		XCTAssert(testPlayer.getFunds() <= 1420) // 1500 - 2 * 40
+		XCTAssert(testLandlord.getFunds() >= 1580) // 1500 + 2 * 40
 	}
 
 	func testOnUtility2Onwed() {
+		let	testSpace1 = OwnedSpace(name: "Electric Company", type: .Utility)
+		let testSpace2 = OwnedSpace(name: "Water Works", type: .Utility)
+		let testPlayer = Player(name: "Test", id: 0)
+		let testLandlord = Player(name: "Landlord", id: 1)
 
+		testSpace1.owner = testLandlord
+		testSpace2.owner = testLandlord
+		testPlayer.currentSpace = testSpace2
+
+		XCTAssert(testLandlord.getFunds() >= 1700) // 1500 + 2 * 100
+		XCTAssert(testPlayer.getFunds() <= 1300) // 1500 - 2 * 100
 	}
 
 	func testOnRail1Owned() {
+		let testSpace = OwnedSpace(name: "Reading Railroad", type: .Railroad)
+		let testPlayer = Player(name: "Test", id: 0)
+		let testLandlord = Player(name: "Landlord", id: 1)
 
+		testSpace.owner = testLandlord
+		testPlayer.currentSpace = testSpace
+
+		XCTAssertEqual(testPlayer.getFunds(), 1475) // 1500 - 25
+		XCTAssertEqual(testLandlord.getFunds(), 1525) // 1500 + 25
 	}
 
 	func testOnRail3Owned() {
+		let testSpace1 = OwnedSpace(name: "Reading Railroad", type: .Railroad)
+		let testSpace2 = OwnedSpace(name: "Reading1 Railroad", type: .Railroad)
+		let testSpace3 = OwnedSpace(name: "Reading2 Railroad", type: .Railroad)
+		let testPlayer = Player(name: "Test", id: 0)
+		let testLandlord = Player(name: "Landlord", id: 1)
 
+		testSpace1.owner = testLandlord
+		testSpace2.owner = testLandlord
+		testSpace3.owner = testLandlord
+		testPlayer.currentSpace = testSpace1
+
+		XCTAssertEqual(testPlayer.getFunds(), 1400)
+		XCTAssertEqual(testLandlord.getFunds(), 1600)
 	}
-
+*/
 	func testMortgageSpaceMoneyReturned() {
+		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
+		let testLandlord = Player(name: "Landlord", id: 1)
 
+		testSpace.owner = testLandlord
+		testSpace.mortgageSpace()
+
+		XCTAssertEqual(testLandlord.getFunds(), 1530) // 1500 + 60 / 2
 	}
 
 	func testMortgageSpaceNoRent() {
+		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
+		let testPlayer = Player(name: "Test", id: 0)
+		let testLandlord = Player(name: "Landlord", id: 1)
 
+		testSpace.owner = testLandlord
+		testSpace.mortgageSpace()
+		testLandlord.removeMoney(30) // Remove mortgage
+		testPlayer.currentSpace = testSpace
+
+		XCTAssertEqual(testPlayer.getFunds(), 1500) // No change
+		XCTAssertEqual(testLandlord.getFunds(), 1500) // No change
 	}
-
-	func testMortgageSpace10() {
+/* Functionality non-existant (no option)
+	func testDemortgageSpace10() {
 
 	}
 
 	func testMortgageSpaceSold() {
 
 	}
+*/
+	func testCorrectPropertyPriceStarting() {
+		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
+		let testValue = 60
 
+		XCTAssertEqual(testSpace.price, testValue)
+	}
+
+	func testStartPropertyTopOverride() {
+		let testSpace = Property(name: "Baltic Avenue", group: .Brown, groupPosition: 2)
+		let testValue = 60
+
+		XCTAssertEqual(testSpace.price, testValue)
+	}
+
+	func testPropertyPriceCalculation() {
+		let testSpace = Property(name: "Atlantic Avenue", group: .Yellow, groupPosition: 1)
+		let testValue = 260
+
+		XCTAssertEqual(testSpace.price, testValue)
+	}
+
+	func testTopPropertyPriceCalculation() {
+		let testSpace = Property(name: "Marvin Gardens", group: .Yellow, groupPosition: 3)
+		let testValue = 280
+
+		XCTAssertEqual(testSpace.price, testValue)
+	}
+/* Functionality non-existant
 	func testBuyProperty() {
 
 	}
 
 	func testBuyHouseNotFullGroup() {
-
+		
 	}
 
 	func testBuyHouseFullGroup() {
@@ -144,4 +242,5 @@ class MonopolyTests: XCTestCase {
 	func testSellHouse() {
 
 	}
+*/
 }
