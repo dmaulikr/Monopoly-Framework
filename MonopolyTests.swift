@@ -55,7 +55,7 @@ class MonopolyTests: XCTestCase {
 
 	func testSendToJail() {
 		let testPlayer = Player(name: "Test", id: 0)
-		testPlayer.currentSpace = start
+		testPlayer.currentSpace = spaceArray[0]
 		testPlayer.sendToJail()
 
 		XCTAssert(testPlayer.isInJail())
@@ -67,12 +67,12 @@ class MonopolyTests: XCTestCase {
 		testPlayer.sendToJail()
 
 		XCTAssert(testPlayer.playerHasFreeCard.isEmpty)
-		XCTAssertEqual(testPlayer.currentSpace, jailVisit)
+		XCTAssertEqual(testPlayer.currentSpace, spaceArray[10])
 	}
 
 	func testOnTaxes() {
 		let testPlayer = Player(name: "Test", id: 0)
-		testPlayer.currentSpace = incomeTax
+		testPlayer.currentSpace = spaceArray[4]
 
 		XCTAssertEqual(testPlayer.getFunds(), 1300)
 	}
