@@ -195,6 +195,10 @@ class Space: Equatable {
 		self.value = value
 	}
 
+	var owner: Player?
+	var price: Int {return 0}
+	func mortgageSpace() {}
+
 	func whenPlayerOnSpace(player: Player) {
 		if action != nil {
 			switch action! {
@@ -220,7 +224,7 @@ class OwnedSpace: Space {
 		case Property = "Property"
 	}
 
-	var owner: Player? = nil {
+	override var owner: Player? {
 		didSet {
 			if isMortgaged {
 				let mortgageChange = onMortgageChangeChoice() // User option
@@ -240,7 +244,7 @@ class OwnedSpace: Space {
 		super.init(name: name, action: Action.onProperty, value: nil)
 	}
 
-	var price: Int {
+	override var price: Int {
 		var price = 0
 
 		switch type {
@@ -312,11 +316,11 @@ class OwnedSpace: Space {
 		return price
 	}
 	var mortgagePrice: Int {
-		return price / 2
+		return self.price / 2
 	}
 
 	var isMortgaged: Bool = false
-	func mortgageSpace() {
+	override func mortgageSpace() {
 		owner?.addMoney(mortgagePrice)
 		isMortgaged = true
 	}

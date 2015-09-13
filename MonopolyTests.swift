@@ -156,24 +156,22 @@ class MonopolyTests: XCTestCase {
 	}
 */
 	func testMortgageSpaceMoneyReturned() {
-		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
 		let testLandlord = Player(name: "Landlord", id: 1)
 
-		testSpace.owner = testLandlord
-		testSpace.mortgageSpace()
+		spaceArray[1].owner = testLandlord // Mediterranean Avenue
+		spaceArray[1].mortgageSpace()
 
 		XCTAssertEqual(testLandlord.getFunds(), 1530) // 1500 + 60 / 2
 	}
 
 	func testMortgageSpaceNoRent() {
-		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
 		let testPlayer = Player(name: "Test", id: 0)
 		let testLandlord = Player(name: "Landlord", id: 1)
 
-		testSpace.owner = testLandlord
-		testSpace.mortgageSpace()
+		spaceArray[1].owner = testLandlord // Mediterranean Avenue
+		spaceArray[1].mortgageSpace()
 		testLandlord.removeMoney(30) // Remove mortgage
-		testPlayer.currentSpace = testSpace
+		testPlayer.currentSpace = spaceArray[1]
 
 		XCTAssertEqual(testPlayer.getFunds(), 1500) // No change
 		XCTAssertEqual(testLandlord.getFunds(), 1500) // No change
@@ -188,31 +186,19 @@ class MonopolyTests: XCTestCase {
 	}
 */
 	func testCorrectPropertyPriceStarting() {
-		let testSpace = Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1)
-		let testValue = 60
-
-		XCTAssertEqual(testSpace.price, testValue)
+		XCTAssertEqual(spaceArray[1].price, 60) // Mediterranean Avenue
 	}
 
 	func testStartPropertyTopOverride() {
-		let testSpace = Property(name: "Baltic Avenue", group: .Brown, groupPosition: 2)
-		let testValue = 60
-
-		XCTAssertEqual(testSpace.price, testValue)
+		XCTAssertEqual(spaceArray[3].price, 60) // Baltic Avenue
 	}
 
 	func testPropertyPriceCalculation() {
-		let testSpace = Property(name: "Atlantic Avenue", group: .Yellow, groupPosition: 1)
-		let testValue = 260
-
-		XCTAssertEqual(testSpace.price, testValue)
+		XCTAssertEqual(spaceArray[26].price, 260) // Atlantic Avenue
 	}
 
 	func testTopPropertyPriceCalculation() {
-		let testSpace = Property(name: "Marvin Gardens", group: .Yellow, groupPosition: 3)
-		let testValue = 280
-
-		XCTAssertEqual(testSpace.price, testValue)
+		XCTAssertEqual(spaceArray[29].price, 280) // Marvin Gardens
 	}
 /* Functionality non-existant
 	func testBuyProperty() {
