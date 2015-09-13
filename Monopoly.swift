@@ -6,6 +6,67 @@
 //
 
 import Foundation
+/**
+Holds all spaces on the board
+*/
+var spaceArray: [Space] = [
+	Space(name: "Go", action: nil), // Collection after going through array, not onSpace
+	Property(name: "Mediterranean Avenue", group: .Brown, groupPosition: 1),
+	Space(name: "Community Chest", action: .onCommunityChest),
+	Property(name: "Baltic Avenue", group: .Brown, groupPosition: 2),
+	Space(name: "Income Tax", action: .onTaxes, value: 200),
+	OwnedSpace(name: "Reading Railroad", type: .Railroad),
+	Property(name: "Oriental Avenue", group: .Light_Blue, groupPosition: 1),
+	Space(name: "Chance", action: .onChance),
+	Property(name: "Vermont Avenue", group: .Light_Blue, groupPosition: 2),
+	Property(name: "Connecticut Avenue", group: .Light_Blue, groupPosition: 3),
+	Space(name: "In Jail / Just Visiting", action: nil),
+	Property(name: "St. Charles Place", group: .Pink, groupPosition: 1),
+	OwnedSpace(name: "Electric Company", type: .Utility),
+	Property(name: "States Avenue", group: .Pink, groupPosition: 2),
+	Property(name: "Virginia Avenue", group: .Pink, groupPosition: 3),
+	OwnedSpace(name: "Pennsylvania Railroad", type: .Railroad),
+	Property(name: "St. James Place", group: .Orange, groupPosition: 1),
+	Space(name: "Community Chest", action: .onCommunityChest, value: 1),
+	Property(name: "Tennessee Avenue", group: .Orange, groupPosition: 2),
+	Property(name: "New York Avenue", group: .Orange, groupPosition: 3),
+	Space(name: "Free Parking", action: nil),
+	Property(name: "Kentucky Avenue", group: .Red, groupPosition: 1),
+	Space(name: "Chance", action: .onChance, value: 1),
+	Property(name: "Indiana Avenue", group: .Red, groupPosition: 2),
+	Property(name: "Illinois Avenue", group: .Red, groupPosition: 3),
+	OwnedSpace(name: "B&O Railroad", type: .Railroad),
+	Property(name: "Atlantic Avenue", group: .Yellow, groupPosition: 1),
+	Property(name: "Ventnor Avenue", group: .Yellow, groupPosition: 2),
+	OwnedSpace(name: "Water Works", type: .Utility),
+	Property(name: "Marvin Gardens", group: .Yellow, groupPosition: 3),
+	Space(name: "Go to Jail", action: .toJail),
+	Property(name: "Pacific Avenue", group: .Green, groupPosition: 1),
+	Property(name: "North Carolina Avenue", group: .Green, groupPosition: 2),
+	Space(name: "Community Chest", action: .onCommunityChest, value: 2),
+	Property(name: "Pennsylvania Avenue", group: .Green, groupPosition: 3),
+	OwnedSpace(name: "Short Line", type: .Railroad),
+	Space(name: "Chance", action: .onChance, value: 2),
+	Property(name: "Park Place", group: .Blue, groupPosition: 1),
+	Space(name: "Luxury Tax", action: .onTaxes, value: 100),
+	Property(name: "Boardwalk", group: .Blue, groupPosition: 2)
+]
+
+// Set up settings
+let maxHouseNumber = 5
+let propertyStartingPrice = 60
+let propertyAddingPrice = 40
+let propertyTopPrice = 20
+let topPropertyPrice = 10
+let topPropertyTopPrice = 50
+let railroadPrice = 200
+let utilityPrice = 150
+let playerStartingFunds = 1500
+
+// Cards
+let chanceCards: [Card] = []
+let communityChestCards: [Card] = []
+
 
 /* Make Space & Player Equatable
 * Needed to differentiate between community chest and chance spaces
@@ -35,7 +96,7 @@ class Player: Equatable {
 		self.id = id
 	}
 
-	private var money: Int = startingMoney // Current amount of money * Default = 1500
+	private var funds: Int = playerStartingFunds // Current amount of money * Default = 1500
 
 	private var playerInJail: Bool = false // Diff. <-> just visiting and in jail
 	var playerHasFreeCard: [Card.format] = [] // Get out of jail free
@@ -43,14 +104,14 @@ class Player: Equatable {
 		return playerInJail
 	}
 
-	var currentSpace: Space = start {
+	var currentSpace: Space = spaceArray[0] {
 		didSet {
 			currentSpace.whenPlayerOnSpace(self) // Perform space action
 		}
 	}
 
 	func removeMoney(amount: Int) {
-		if money < amount {
+		if funds < amount {
 			/*// Check all possesions
 			var combinedWealth
 			for space in spaceArray {
@@ -59,16 +120,16 @@ class Player: Equatable {
 			/// TODO: Check all possesions, if < amount, bankrupt and switch owner
 			/// TODO: Give player option
 		} else {
-			money -= amount
+			funds -= amount
 		}
 	}
 
 	func addMoney(amount: Int) {
-		money += amount
+		funds += amount
 	}
 
 	func getFunds() -> Int {
-		return money
+		return funds
 	}
 
 	func sendToJail() {
@@ -77,7 +138,7 @@ class Player: Equatable {
 			playerInJail = false
 			playerHasFreeCard.removeFirst() // Remove free card, no diff between type
 		}
-		currentSpace = jailVisit
+		currentSpace = spaceArray[10]
 	}
 
 	// On turn if doubles thrown three times, send to jail
@@ -180,7 +241,7 @@ class OwnedSpace: Space {
 
 		switch type {
 		case .Railroad:
-			price = railPrice
+			price = railroadPrice
 		case .Utility:
 			price = utilityPrice
 		case .Property:
@@ -290,24 +351,24 @@ class Property: OwnedSpace {
 		super.init(name: name, type: .Property)
 	}
 
-	private var numberOfHouses: UInt = 0
+	private var numberOfHouses = 0
 	var housePrice: Int {
 		return 2
 	}
 
 	override var price: Int {
-		var price = group.rawValue * propAddingPrice + propStartingPrice
+		var price = group.rawValue * propertyAddingPrice + propertyStartingPrice
 
 		switch group {
 		case .Blue:
-			price += 10
+			price += topPropertyPrice
 
 			if groupPosition == 2 {
-				price += 50
+				price += topPropertyTopPrice
 			}
 		default:
 			if groupPosition == 3 {
-				price += propTopGroupPrice
+				price += propertyTopPrice
 			}
 		}
 		return price
