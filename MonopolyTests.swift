@@ -63,7 +63,7 @@ class MonopolyTests: XCTestCase {
 
 	func testSendToJailWithCard() {
 		let testPlayer = Player(name: "Test", id: 0)
-		testPlayer.playerHasFreeCard.append(.chance)
+		testPlayer.playerHasFreeCard.append(Card())
 		testPlayer.sendToJail()
 
 		XCTAssert(testPlayer.playerHasFreeCard.isEmpty)
